@@ -1,17 +1,20 @@
-import { bot } from "./bot";
-import dotenv from "dotenv";
+import { webhookCallback } from "grammy";
+import { createServer } from "http";
+import { bot } from "./bot.js";
+import "dotenv/config";
 
-dotenv.config();
+const port = 3001;
+const path = "/bot/development";
 
-const token = process.env.BOT_TOKEN!;
-const port = Number(process.env.PORT) || 3001;
-
-bot.start({
-	webhook: {
-		domain: process.env.WEBHOOK_URL, // например, https://lmdntech.co.il
-		port,
-		hookPath: `/bot/${token}`,       // именно с /bot/
-	},
+const server = createServer((req, res) => {
+	if (req.method === "POST" && req.url === path) {
+		webhookCallback(bot, "http")(req, res);
+	} else {
+		res.writeHead(200);
+		res.end("OK");
+	}
 });
 
-console.log(`🚀 Бот слушает /bot/${token} на порту ${port}`);
+server.listen(port, () => {
+	console.log(`🚀 Webhook-сервер слушает на http://localhost:${port}${path}`);
+});

@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.bot = void 0;
+const tslib_1 = require("tslib");
+const grammy_1 = require("grammy");
+const dotenv_1 = tslib_1.__importDefault(require("dotenv"));
+dotenv_1.default.config();
+exports.bot = new grammy_1.Bot(process.env.BOT_TOKEN);
+exports.bot.command("start", (ctx) => ctx.reply("Express вебхук работает!"));
+exports.bot.on("message", (ctx) => ctx.reply("Ты написал: " + ctx.message?.text));
