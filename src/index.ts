@@ -1,18 +1,17 @@
-import dotenv from 'dotenv';
+import express from "express";
+import dotenv from "dotenv";
+import { bot } from "./bot";
+import { webhookCallback } from "grammy";
 
 dotenv.config();
 
-import {Bot} from 'grammy';
+const app = express();
+const port = Number(process.env.PORT) || 3000;
+const token = process.env.BOT_TOKEN!;
 
-const token = process.env.DEVELOPMENT_BOT_TOKEN;
+app.use(express.json());
+app.post(`/${token}`, webhookCallback(bot, "express"));
 
-if(!token){
-
-	throw new Error('DEVELOPMENT_BOT_TOKEN is not found in .env');
-
-}
-
-const bot = new Bot(token);
-
-bot.command('start',ctx=>ctx.reply('Йеееее'));
-bot.start();
+app.listen(port, () => {
+	console.log(`✅ Бот слушает на http://localhost:${port}/${token}`);
+});
