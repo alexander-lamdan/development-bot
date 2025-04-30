@@ -10,7 +10,7 @@ const port = Number(process.env.PORT) || 3000;
 const token = process.env.BOT_TOKEN!;
 
 app.use(express.json());
-app.post(`/${token}`, webhookCallback(bot, "express"));
+app.post(`/bot/${token}`, webhookCallback(bot, "express"));
 
 app.listen(port, () => {
 	console.log(`✅ Бот слушает на http://localhost:${port}/${token}`);
