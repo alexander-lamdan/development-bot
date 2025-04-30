@@ -1,17 +1,17 @@
-import express from "express";
-import dotenv from "dotenv";
 import { bot } from "./bot";
-import { webhookCallback } from "grammy";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const app = express();
-const port = Number(process.env.PORT) || 3000;
 const token = process.env.BOT_TOKEN!;
+const port = Number(process.env.PORT) || 3001;
 
-app.use(express.json());
-app.post(`/bot/${token}`, webhookCallback(bot, "express"));
-
-app.listen(port, () => {
-	console.log(`✅ Бот слушает на http://localhost:${port}/${token}`);
+bot.start({
+	webhook: {
+		domain: process.env.WEBHOOK_URL, // например, https://lmdntech.co.il
+		port,
+		hookPath: `/bot/${token}`,       // именно с /bot/
+	},
 });
+
+console.log(`🚀 Бот слушает /bot/${token} на порту ${port}`);
