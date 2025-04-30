@@ -1,10 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bot = void 0;
-const tslib_1 = require("tslib");
 const grammy_1 = require("grammy");
-const dotenv_1 = tslib_1.__importDefault(require("dotenv"));
-dotenv_1.default.config();
-exports.bot = new grammy_1.Bot(process.env.BOT_TOKEN);
-exports.bot.command("start", (ctx) => ctx.reply("Express вебхук работает!"));
-exports.bot.on("message", (ctx) => ctx.reply("Ты написал: " + ctx.message?.text));
+require("dotenv/config");
+const token = process.env.BOT_TOKEN;
+const apiRoot = "http://localhost:8081";
+exports.bot = new grammy_1.Bot(token, {
+    client: {
+        apiRoot,
+    },
+});
+exports.bot.command("start", async (ctx) => {
+    console.log("📨 /start получен от:", ctx.from?.id);
+    await ctx.reply("Привет! Я бот для разработки");
+});
+exports.bot.on("message:text", async (ctx) => {
+    console.log("📨 Текстовое сообщение:", ctx.message.text);
+    await ctx.reply(`Ты сказал: ${ctx.message.text}`);
+});

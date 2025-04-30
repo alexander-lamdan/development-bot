@@ -18,3 +18,4 @@ bot.command("start", async (ctx) => {
 bot.on("message:text", async (ctx) => {
 	console.log("📨 Текстовое сообщение:", ctx.message.text);
 	await ctx.reply(`Ты сказал: ${ctx.message.text}`);
+});

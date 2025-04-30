@@ -7,14 +7,14 @@
     "disableSolutionSearching": true,
     "disableReferencedProjectLoad": true,
 
-    "target": "es2022",
+    "target": "esnext",
     "lib": ["esnext"],
     "useDefineForClassFields": true,
     "moduleDetection": "auto",
 
-    "module": "commonjs",
-    "rootDir": "src",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "rootDir": "./src",
+    "moduleResolution": "NodeNext",
     "baseUrl": "./",
     "allowUmdGlobalAccess": false,
     "allowImportingTsExtensions": false,
@@ -26,7 +26,7 @@
     "declaration": false,
     "declarationMap": false,
     "emitDeclarationOnly": false,
-    "outDir": "dist",
+    "outDir": "./dist",
     "removeComments": true,
     "importHelpers": true,
     "noEmitOnError": true,
@@ -61,3 +61,4 @@
     "skipLibCheck": true
   }
 }
+
