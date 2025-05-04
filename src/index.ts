@@ -1,20 +1,34 @@
-import { webhookCallback } from "grammy";
-import { createServer } from "http";
-import { bot } from "./bot.js";
-import "dotenv/config";
+import {config} from './shared/config/config.js';
+import {createServer} from 'http';
+import {TelegramBot} from './core/TelegramBot.js';
 
-const port = 3001;
-const path = "/bot/development";
+const bot = new TelegramBot();
 
-const server = createServer((req, res) => {
-	if (req.method === "POST" && req.url === path) {
-		webhookCallback(bot, "http")(req, res);
-	} else {
-		res.writeHead(200);
-		res.end("OK");
-	}
-});
+if(config.mode === 'polling'){
 
-server.listen(port, () => {
-	console.log(`🚀 Webhook-сервер слушает на http://localhost:${port}${path}`);
-});
+	bot.startPolling();
+
+}else{
+
+	const server = createServer((req,res)=>{
+
+		if(req.method === 'POST' && req.url === config.path){
+
+			bot.webhookCallback()(req,res);
+
+		}else{
+
+			res.writeHead(200);
+			res.end('OK');
+
+		}
+
+	});
+
+	server.listen(config.port,()=>{
+
+		console.log(`Webhook server is work good without any trouble and listening: http://localhost:${config.port}${config.path}`)
+
+	});
+
+}

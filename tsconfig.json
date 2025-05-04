@@ -58,7 +58,10 @@
     "noFallthroughCasesInSwitch": false,
     "noImplicitThis": false,
 
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types":["node"],
+    "verbatimModuleSyntax":true,
+    "noEmit":false
   }
 }
 
