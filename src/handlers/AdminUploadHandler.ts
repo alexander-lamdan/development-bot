@@ -10,6 +10,7 @@ export function AdminUploadHandler(bot: Bot<Context>) {
 		if (!fileId) return;
 
 		const file = await ctx.api.getFile(fileId);
+		await fetch(`http://localhost:8081/file/bot${config.token}/${file.file_path}`);
 		const cleanedPath = file.file_path?.replace(/^.*?(documents|photos|videos|voice|audio|thumb|animation|sticker|video_note)\//, '$1/');
 		if (!cleanedPath) {
 			console.log('❌ Не удалось очистить file_path:', file.file_path);
@@ -37,6 +38,7 @@ export function AdminUploadHandler(bot: Bot<Context>) {
 		if (!photo) return;
 
 		const file = await ctx.api.getFile(photo.file_id);
+		await fetch(`http://localhost:8081/file/bot${config.token}/${file.file_path}`);
 		const cleanedPath = file.file_path?.replace(/^.*?(documents|photos|videos|voice|audio|thumb|animation|sticker|video_note)\//, '$1/');
 		if (!cleanedPath) {
 			console.log('❌ Не удалось очистить file_path:', file.file_path);
