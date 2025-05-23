@@ -1,13 +1,11 @@
 import { Bot, webhookCallback } from 'grammy';
 import { config } from '../shared/config/config.js';
-import { AdminUploadHandler } from '../handlers/AdminUploadHandler.js';
 export class TelegramBot {
     bot;
     webhookCallback;
     constructor() {
         this.bot = new Bot(config.token);
         this.webhookCallback = webhookCallback(this.bot, 'express');
-        AdminUploadHandler(this.bot);
     }
     startPolling() {
         this.bot.start();
