@@ -11,7 +11,6 @@ export function AdminUploadHandler(bot: Bot<Context>) {
 
 		const file = await ctx.api.getFile(fileId);
 
-		// Очистка абсолютного пути
 		const cleanedPath = file.file_path?.replace(
 			/^.*?(documents|photos|videos|voice|audio|thumb|animation|sticker|video_note)\//,
 																								'$1/'
@@ -28,15 +27,14 @@ export function AdminUploadHandler(bot: Bot<Context>) {
 		console.log('📥 Доступ по ссылке:', url);
 
 		if (isFileDownloaded(cleanedPath)) {
-			console.log('✅ Файл реально лежит на диске');
+			console.log('✅ Файл реально лежит на диске и читается');
 		} else {
-			console.log('❌ Файл НЕ скачан — Telegram CDN вернул ошибку или не ответил');
+			console.log('❌ Файл не читается. Возможно, нет доступа или файл не скачан.');
 		}
-
 	});
 
 	bot.on('message:photo', async (ctx) => {
-		const photo = ctx.message?.photo?.at(-1); // самое большое
+		const photo = ctx.message?.photo?.at(-1);
 		if (!photo) return;
 
 		const file = await ctx.api.getFile(photo.file_id);
@@ -57,17 +55,25 @@ export function AdminUploadHandler(bot: Bot<Context>) {
 		console.log('📥 Доступ по ссылке:', url);
 
 		if (isFileDownloaded(cleanedPath)) {
-			console.log('✅ Файл реально лежит на диске');
+			console.log('✅ Файл реально лежит на диске и читается');
 		} else {
-			console.log('❌ Файл НЕ скачан — Telegram CDN вернул ошибку или не ответил');
+			console.log('❌ Файл не читается. Возможно, нет доступа или файл не скачан.');
 		}
-
 	});
-
 }
 
-function isFileDownloaded(filePath: string): boolean {
-	const baseDir = '/opt/telegram-bot-api/storage'; // путь к storage
+function isFileDownloaded(filePath?: string): boolean {
+	if (!filePath) return false;
+
+	const baseDir = '/opt/telegram-bot-api/storage';
 	const fullPath = path.join(baseDir, `bot${config.token}`, filePath);
-	return fs.existsSync(fullPath);
+
+	try {
+		fs.accessSync(fullPath, fs.constants.R_OK);
+		return true;
+	} catch (err) {
+		console.log(`❗ fs.accessSync: нет доступа к файлу → ${fullPath}`);
+		return false;
+	}
 }
+
