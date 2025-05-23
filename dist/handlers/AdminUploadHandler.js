@@ -13,15 +13,19 @@ export function AdminUploadHandler(bot) {
             console.log('❌ Не удалось очистить file_path:', file.file_path);
             return;
         }
-        console.log('📎 [DOCUMENT] cleaned file_path:', cleanedPath);
+        const fullPath = path.join('/opt/telegram-bot-api/storage', `bot${config.token}`, cleanedPath);
         const url = `http://localhost:8081/file/bot${config.token}/${cleanedPath}`;
+        console.log('📎 [DOCUMENT] cleaned file_path:', cleanedPath);
         console.log('📥 Доступ по ссылке:', url);
-        if (isFileDownloaded(cleanedPath)) {
-            console.log('✅ Файл реально лежит на диске и читается');
-        }
-        else {
-            console.log('❌ Файл не читается. Возможно, нет доступа или файл не скачан.');
-        }
+        setTimeout(() => {
+            try {
+                fs.accessSync(fullPath, fs.constants.R_OK);
+                console.log('✅ Файл реально лежит на диске и читается');
+            }
+            catch (err) {
+                console.log('❌ Файл НЕ читается или НЕ скачан (Telegram CDN не успел)');
+            }
+        }, 1500);
     });
     bot.on('message:photo', async (ctx) => {
         const photo = ctx.message?.photo?.at(-1);
@@ -33,28 +37,18 @@ export function AdminUploadHandler(bot) {
             console.log('❌ Не удалось очистить file_path:', file.file_path);
             return;
         }
-        console.log('📎 [PHOTO] cleaned file_path:', cleanedPath);
+        const fullPath = path.join('/opt/telegram-bot-api/storage', `bot${config.token}`, cleanedPath);
         const url = `http://localhost:8081/file/bot${config.token}/${cleanedPath}`;
+        console.log('📎 [PHOTO] cleaned file_path:', cleanedPath);
         console.log('📥 Доступ по ссылке:', url);
-        if (isFileDownloaded(cleanedPath)) {
-            console.log('✅ Файл реально лежит на диске и читается');
-        }
-        else {
-            console.log('❌ Файл не читается. Возможно, нет доступа или файл не скачан.');
-        }
+        setTimeout(() => {
+            try {
+                fs.accessSync(fullPath, fs.constants.R_OK);
+                console.log('✅ Фото реально лежит на диске и читается');
+            }
+            catch (err) {
+                console.log('❌ Фото НЕ читается или НЕ скачано (Telegram CDN не успел)');
+            }
+        }, 1500);
     });
-}
-function isFileDownloaded(filePath) {
-    if (!filePath)
-        return false;
-    const baseDir = '/opt/telegram-bot-api/storage';
-    const fullPath = path.join(baseDir, `bot${config.token}`, filePath);
-    try {
-        fs.accessSync(fullPath, fs.constants.R_OK);
-        return true;
-    }
-    catch (err) {
-        console.log(`❗ fs.accessSync: нет доступа к файлу → ${fullPath}`);
-        return false;
-    }
 }
