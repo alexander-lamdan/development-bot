@@ -29,7 +29,7 @@ export function AdminUploadHandler(bot: Bot<Context>) {
 			} catch (err) {
 				console.log('❌ Файл НЕ читается или НЕ скачан (Telegram CDN не успел)');
 			}
-		}, 1500); // ⏳ ждем 1.5 секунды
+		}, 3000);
 	});
 
 	bot.on('message:photo', async (ctx) => {
@@ -52,10 +52,10 @@ export function AdminUploadHandler(bot: Bot<Context>) {
 		setTimeout(() => {
 			try {
 				fs.accessSync(fullPath, fs.constants.R_OK);
-				console.log('✅ Фото реально лежит на диске и читается');
+				console.log('✅ Файл реально лежит на диске и читается');
 			} catch (err) {
-				console.log('❌ Фото НЕ читается или НЕ скачано (Telegram CDN не успел)');
+				console.log('❌ Файл НЕ читается или НЕ скачан (Telegram CDN не успел)');
 			}
-		}, 1500);
+		}, 3000);
 	});
 }
