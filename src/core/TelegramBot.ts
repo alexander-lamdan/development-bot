@@ -1,41 +1,22 @@
-import {webhookCallback} from 'grammy';
-import {Bot} from 'grammy';
-import {BotContext} from './BotContext.js';
+import{Bot, webhookCallback} from 'grammy';
 import {config} from '../shared/config/config.js';
-import {BotKernel} from './BotKernel.js';
 
 export class TelegramBot{
 
-	private readonly context:BotContext;
-	private readonly bot:Bot;
+	private bot:Bot;
+	public webhookCallback;
 
 	constructor(){
 
-		this.context = new BotContext();
-		this.bot = this.context.bot;
-
-		this.registerMiddlewares();
-
-		new BotKernel(this.context).registerHandlers();
-
-	}
-
-	private registerMiddlewares(){
-
-
+		this.bot = new Bot(config.token);
+		this.webhookCallback = webhookCallback(this.bot, 'express');
 
 	}
 
 	public startPolling(){
 
 		this.bot.start();
-		console.log('Bot is working on the polling');
-
-	}
-
-	public webhookCallback(){
-
-		return webhookCallback(this.bot,'http');
+		console.log('Bot is now working on Long Polling');
 
 	}
 

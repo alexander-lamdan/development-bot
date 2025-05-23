@@ -1,34 +1,16 @@
-import {config} from './shared/config/config.js';
-import {createServer} from 'http';
-import {TelegramBot} from './core/TelegramBot.js';
+import express from 'express';
+import { config } from './shared/config/config.js';
+import { TelegramBot } from './core/TelegramBot.js';
 
 const bot = new TelegramBot();
+const app = express();
 
-if(config.mode === 'polling'){
+app.use(express.json()); // вот зачем нужен express — он сам парсит JSON
 
-	bot.startPolling();
+app.post(config.path, bot.webhookCallback); // '/bot/dailyvital'
 
-}else{
+app.get('/', (_, res) => res.send('OK')); // простая проверка
 
-	const server = createServer((req,res)=>{
-
-		if(req.method === 'POST' && req.url === config.path){
-
-			bot.webhookCallback()(req,res);
-
-		}else{
-
-			res.writeHead(200);
-			res.end('OK');
-
-		}
-
-	});
-
-	server.listen(config.port,()=>{
-
-		console.log(`Webhook server is work good without any trouble and listening: http://localhost:${config.port}${config.path}`)
-
-	});
-
-}
+app.listen(Number(config.port), () => {
+	console.log(`✅ Express сервер слушает порт ${config.port}, путь webhook: ${config.path}`);
+});
