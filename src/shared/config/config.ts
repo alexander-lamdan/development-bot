@@ -1,17 +1,11 @@
-import "dotenv/config";
-
-if(!process.env.BOT_TOKEN){
-
-	throw new Error('BOT_TOKEN is not find in the .env file');
-
-}
+import {localConfig} from './index.js';
 
 export const config = {
 
-	token: process.env.BOT_TOKEN,
-	path: process.env.WEBHOOK_PATH || "/bot/development",
-	mode: process.env.MODE || "webhook",
-	adminId:Number(process.env.ADMIN_ID || 0),
-	port: Number(process.env.PORT) || 3001
+	token: localConfig.bot_token,
+	path: localConfig.url_path || "/bot/development",
+	mode: localConfig.mode || "webhook",
+	adminId:Number(localConfig.admin_chat_id || 0),
+	port: Number(localConfig.port) || 3000
 
 };
